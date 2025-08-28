@@ -41,23 +41,23 @@ def style:
     }
   end;
 
-def add_modifier(modifier):
-  if has("modifiers") then
-    .modifiers as $m
-    | .modifiers = ($m + [modifier] | unique)
-  else
-    . + {modifiers: [modifier]}
-  end;
-
+def add_modifier($mod): .modifiers = (.modifiers // [] | . + [$mod] | unique);
 def bold: add_modifier("bold");
 def dim: add_modifier("dim");
 def italic: add_modifier("italic");
-def underlined: add_modifier("underlined");
 def slow_blink: add_modifier("slow_blink");
 def rapid_blink: add_modifier("rapid_blink");
 def reversed: add_modifier("reversed");
 def hidden: add_modifier("hidden");
 def crossed_out: add_modifier("crossed_out");
+
+def underline($obj): .underline = (.underline // {} | . + $obj);
+def underline_color($color): { underline: { color: $color } };
+def underline_single: underline({ style: "line" });
+def underline_double: underline({ style: "double_line" });
+def underline_curl: underline({ style: "curl" });
+def underline_dashed: underline({ style: "dashed" });
+def underline_dotted: underline({ style: "dotted" });
 
 .themes[$i].style |
 [
@@ -92,7 +92,7 @@ def crossed_out: add_modifier("crossed_out");
   # "\"variable.builtin\" = \( | v)",
   # "\"variable.parameter\" = \( | v)",
   # "\"variable.other\" = \( | v)",
-  # "\"variable.other.member\" = \( | v)",
+  "\"variable.other.member\" = \(.syntax.property | style | v)",
   # "\"variable.other.member.private\" = \( | v)",
   "\"label\" = \(.syntax.label | style | v)",
   "\"punctuation\" = \(.syntax.punctuation | style | v)",
@@ -113,8 +113,8 @@ def crossed_out: add_modifier("crossed_out");
   # "\"keyword.storage.type\" = \( | v)",
   # "\"keyword.storage.modifier\" = \( | v)",
   "\"operator\" = \(.syntax.operator | style | v)",
-  "\"function\" = \(.syntax.function | style | bold | v)",
-  "\"function.builtin\" = \(.syntax."function.builtin" | style | bold | v)",
+  "\"function\" = \(.syntax.function | style | v)",
+  "\"function.builtin\" = \(.syntax."function.builtin" | style | v)",
   # "\"function.method\" = \( | v)",
   # "\"function.method.private\" = \( | v)",
   # "\"function.macro\" = \( | v)",
@@ -124,7 +124,7 @@ def crossed_out: add_modifier("crossed_out");
   "\"namespace\" = \(.syntax.namespace | style | v)",
   "\"special\" = \(.syntax.keyword | style | v)",
   # "\"markup\" = \( | v)",
-  # "\"markup.heading\" = \( | v)",
+  "\"markup.heading\" = \(.syntax.title | style | v)",
   # "\"markup.heading.marker\" = \( | v)",
   # "\"markup.heading.marker.1\" = \( | v)",
   # "\"markup.heading.marker.2\" = \( | v)",
@@ -137,15 +137,15 @@ def crossed_out: add_modifier("crossed_out");
   # "\"markup.list.umbered\" = \( | v)",
   # "\"markup.list.checked\" = \( | v)",
   # "\"markup.list.unchecked\" = \( | v)",
-  # "\"markup.bold\" = \( | v)",
-  # "\"markup.italic\" = \( | v)",
+  "\"markup.bold\" = \(.syntax."emphasis.strong" | style | v)",
+  "\"markup.italic\" = \(.syntax.emphasis | style | v)",
   # "\"markup.strikethrough\" = \( | v)",
   # "\"markup.link\" = \( | v)",
-  # "\"markup.link.url\" = \( | v)",
+  "\"markup.link.url\" = \(.syntax.link_uri | style | v)",
   # "\"markup.link.label\" = \( | v)",
-  # "\"markup.link.text\" = \( | v)",
+  "\"markup.link.text\" = \(.syntax.link_text | style | v)",
   # "\"markup.quote\" = \( | v)",
-  # "\"markup.raw\" = \( | v)",
+  "\"markup.raw\" = \(.syntax.embedded | style | v)",
   # "\"markup.raw.inline\" = \( | v)",
   # "\"markup.raw.block\" = \( | v)",
   # "\"diff\" = \( | v)",
@@ -190,9 +190,9 @@ def crossed_out: add_modifier("crossed_out");
   # "\"ui.statusline.insert\" = \( | v)",
   # "\"ui.statusline.select\" = \( | v)",
   # "\"ui.statusline.separator\" = \( | v)",
-  "\"ui.bufferline\" = \(bg(."title_bar.inactive_background") | v)",
-  "\"ui.bufferline.active\" = \(bg(."title_bar.background") | v)",
-  "\"ui.bufferline.background\" = \(bg(."title_bar.inactive_background") | v)",
+  "\"ui.bufferline\" = \(bg(."title_bar.background") | v)",
+  "\"ui.bufferline.active\" = \(bg(."title_bar.inactive_background") | bold | v)",
+  "\"ui.bufferline.background\" = \(bg(."title_bar.background") | v)",
   "\"ui.popup\" = \(bg(."elevated_surface.background") + fg(.border) | v)",
   # "\"ui.popup.info\" = \( | v)",
   # "\"ui.picker.header\" = \( | v)",
@@ -211,9 +211,9 @@ def crossed_out: add_modifier("crossed_out");
   # "\"ui.virtual.inlay-hint\" = \( | v)",
   # "\"ui.virtual.inlay-hint.parameter\" = \( | v)",
   # "\"ui.virtual.inlay-hint.type\" = \( | v)",
-  "\"ui.virtual.wrap\" = \(fg(."editor.invisible") | v)",
+  "\"ui.virtual.wrap\" = \(fg(."editor.wrap_guide") | v)",
   "\"ui.virtual.jump-label\" = \(bg(.players[2].selection) + fg(.players[2].cursor) | v)",
-  "\"ui.menu\" = \(bg(."elevated_surface.background") | v)",
+  "\"ui.menu\" = \(bg(."panel.background") + fg(."panel.focused_border") | v)",
   "\"ui.menu.selected\" = \(bg(."element.selected") | v)",
   "\"ui.menu.scroll\" = \(bg(."scrollbar.track.background") + fg(."scrollbar.thumb.background") | v)",
   "\"ui.selection\" = \(bg(.players[1].selection) | v)",
@@ -229,12 +229,12 @@ def crossed_out: add_modifier("crossed_out");
   "\"info\" = \(bg(."info.background") + fg(.info) | v)",
   "\"hint\" = \(bg(."hint.background") + fg(.hint) | v)",
   # "\"diagnostic\" = \( | v)",
-  "\"diagnostic.warning\" = \(bg(."warning.background") + fg(.warning) | v)",
-  "\"diagnostic.error\" = \(bg(."error.background") + fg(.error) | v)",
-  "\"diagnostic.info\" = \(bg(."info.background") + fg(.info) | v)",
-  "\"diagnostic.hint\" = \(bg(."hint.background") + fg(.hint) | v)",
-  "\"diagnostic.unnecessary\" = \(bg(."unreachable.background") + fg(.unreachable) | crossed_out | v)",
-  "\"diagnostic.deprecated\" = \(bg(."ignored.background") + fg(.ignored) | italic | v)",
+  "\"diagnostic.warning\" = \(bg(."warning.background") | v)",
+  "\"diagnostic.error\" = \(bg(."error.background") | v)",
+  "\"diagnostic.info\" = \(bg(."info.background") | v)",
+  "\"diagnostic.hint\" = \(bg(."hint.background") | v)",
+  "\"diagnostic.unnecessary\" = \(bg(."unreachable.background") | crossed_out | v)",
+  "\"diagnostic.deprecated\" = \(bg(."ignored.background") | italic | v)",
   # "\"tabstop\" = \( | v)",
   "",
   "[palette]",
