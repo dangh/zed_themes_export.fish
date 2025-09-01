@@ -31,7 +31,7 @@ def style:
     {}
   else
     {
-      fg: (.color),
+      fg: (.color | color),
       modifiers: (
         [
           if .font_style == "italic" then "italic" else empty end,
@@ -67,13 +67,13 @@ def underline_dotted: underline({ style: "dotted" });
   # "\"type.parameter\" = \( | v)",
   # "\"type.enum\" = \( | v)",
   # "\"type.enum.variant\" = \( | v)",
-  "\"constructor\" = \(.syntax.constructor | style | v)",
+  "\"constructor\" = \(.syntax.constant | style | v)",
   "\"constant\" = \(.syntax.constant | style | v)",
   # "\"constant.builtin\" = \( | v)",
-  # "\"constant.builtin.boolean\" = \( | v)",
+  "\"constant.builtin.boolean\" = \(.syntax.boolean | style | v)",
   # "\"constant.character\" = \( | v)",
   # "\"constant.character.escape\" = \( | v)",
-  # "\"constant.numeric\" = \( | v)",
+  "\"constant.numeric\" = \(.syntax.number | style | v)",
   # "\"constant.numeric.integer\" = \( | v)",
   # "\"constant.numeric.float\" = \( | v)",
   "\"string\" = \(.syntax.string | style | v)",
@@ -89,7 +89,7 @@ def underline_dotted: underline({ style: "dotted" });
   "\"comment.block.documentation\" = \(.syntax."comment.doc" | style | italic | v)",
   # "\"comment.unused\" = \( | v)",
   "\"variable\" = \(.syntax.variable | style | v)",
-  # "\"variable.builtin\" = \( | v)",
+  "\"variable.builtin\" = \(.syntax.constructor | style | v)",
   # "\"variable.parameter\" = \( | v)",
   # "\"variable.other\" = \( | v)",
   "\"variable.other.member\" = \(.syntax.property | style | v)",
