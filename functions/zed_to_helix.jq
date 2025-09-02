@@ -23,15 +23,15 @@ def v:
       + " }"
   end;
 
-def color: blend(.; $bg);
-def fg($v): { fg: ($v | color) };
-def bg($v): { bg: ($v | color) };
+def rgb: blend(.; $bg);
+def fg($v): { fg: ($v | rgb) };
+def bg($v): { bg: ($v | rgb) };
 def style:
   if . == null then
     {}
   else
     {
-      fg: (.color | color),
+      fg: (.color | rgb),
       modifiers: (
         [
           if .font_style == "italic" then "italic" else empty end,
@@ -114,7 +114,7 @@ def underline_dotted: underline({ style: "dotted" });
   # "\"keyword.storage.modifier\" = \( | v)",
   "\"operator\" = \(.syntax.operator | style | v)",
   "\"function\" = \(.syntax.function | style | v)",
-  "\"function.builtin\" = \(.syntax."function.builtin" | style | v)",
+  "\"function.builtin\" = \((.syntax."function.builtin" // .syntax.function) | style | v)",
   # "\"function.method\" = \( | v)",
   # "\"function.method.private\" = \( | v)",
   # "\"function.macro\" = \( | v)",
@@ -157,7 +157,7 @@ def underline_dotted: underline({ style: "dotted" });
   # "\"diff.delta.moved\" = \( | v)",
   # "\"diff.delta.conflict\" = \( | v)",
   "\"diff.delta.gutter\" = \(fg(."editor.gutter.background") + bg(."version_control.modified") | v)",
-  "",
+  # "",
   # "\"markup.normal\" = \( | v)",
   # "\"markup.normal.completion\" = \( | v)",
   # "\"markup.normal.hover\" = \( | v)",
@@ -238,22 +238,22 @@ def underline_dotted: underline({ style: "dotted" });
   # "\"tabstop\" = \( | v)",
   "",
   "[palette]",
-  "\"default\" = \(.text | color | v)",
-  "\"black\" = \(."terminal.ansi.black" | color | v)",
-  "\"red\" = \(."terminal.ansi.red" | color | v)",
-  "\"green\" = \(."terminal.ansi.green" | color | v)",
-  "\"yellow\" = \(."terminal.ansi.yellow" | color | v)",
-  "\"blue\" = \(."terminal.ansi.blue" | color | v)",
-  "\"magenta\" = \(."terminal.ansi.magenta" | color | v)",
-  "\"cyan\" = \(."terminal.ansi.cyan" | color | v)",
-  "\"gray\" = \(."terminal.ansi.white" | color | v)",
-  "\"bright_black\" = \(."terminal.ansi.bright_black" | color | v)",
-  "\"bright_red\" = \(."terminal.ansi.bright_red" | color | v)",
-  "\"bright_green\" = \(."terminal.ansi.bright_green" | color | v)",
-  "\"bright_yellow\" = \(."terminal.ansi.bright_yellow" | color | v)",
-  "\"bright_blue\" = \(."terminal.ansi.bright_blue" | color | v)",
-  "\"bright_magenta\" = \(."terminal.ansi.bright_magenta" | color | v)",
-  "\"bright_cyan\" = \(."terminal.ansi.bright_cyan" | color | v)",
-  "\"bright_gray\" = \(."terminal.ansi.bright_white" | color | v)"
+  "\"default\" = \(.text | rgb | v)",
+  "\"black\" = \(."terminal.ansi.black" | rgb | v)",
+  "\"red\" = \(."terminal.ansi.red" | rgb | v)",
+  "\"green\" = \(."terminal.ansi.green" | rgb | v)",
+  "\"yellow\" = \(."terminal.ansi.yellow" | rgb | v)",
+  "\"blue\" = \(."terminal.ansi.blue" | rgb | v)",
+  "\"magenta\" = \(."terminal.ansi.magenta" | rgb | v)",
+  "\"cyan\" = \(."terminal.ansi.cyan" | rgb | v)",
+  "\"gray\" = \(."terminal.ansi.white" | rgb | v)",
+  "\"bright_black\" = \(."terminal.ansi.bright_black" | rgb | v)",
+  "\"bright_red\" = \(."terminal.ansi.bright_red" | rgb | v)",
+  "\"bright_green\" = \(."terminal.ansi.bright_green" | rgb | v)",
+  "\"bright_yellow\" = \(."terminal.ansi.bright_yellow" | rgb | v)",
+  "\"bright_blue\" = \(."terminal.ansi.bright_blue" | rgb | v)",
+  "\"bright_magenta\" = \(."terminal.ansi.bright_magenta" | rgb | v)",
+  "\"bright_cyan\" = \(."terminal.ansi.bright_cyan" | rgb | v)",
+  "\"bright_gray\" = \(."terminal.ansi.bright_white" | rgb | v)"
   # "\"white\" ="
 ] | .[]
