@@ -1,7 +1,16 @@
+def downhex:
+  gsub("A";"a") |
+  gsub("B";"b") |
+  gsub("C";"c") |
+  gsub("D";"d") |
+  gsub("E";"e") |
+  gsub("F";"f");
+
 def hex2dec($h):
   "0123456789abcdef" as $hex |
-  ($hex | index($h[0:1] | ascii_downcase)) * 16 +
-  ($hex | index($h[1:2] | ascii_downcase));
+  ($h | downhex) as $d |
+  ($hex | index($d[0:1])) * 16 +
+  ($hex | index($d[1:2]));
 
 def dec2hex($n):
   "0123456789abcdef" as $hex |
@@ -10,12 +19,12 @@ def dec2hex($n):
   ($hex[$hi:$hi+1] + $hex[$lo:$lo+1]);
 
 def blend(rgba; bg):
-  if (rgba|length)==9 then
+  if (rgba | length) == 9 then
     {
       r: hex2dec(rgba[1:3]),
       g: hex2dec(rgba[3:5]),
       b: hex2dec(rgba[5:7]),
-      a: hex2dec(rgba[7:9])/255
+      a: (hex2dec(rgba[7:9]) / 255)
     } as $f |
     {
       r: hex2dec(bg[1:3]),
@@ -23,9 +32,9 @@ def blend(rgba; bg):
       b: hex2dec(bg[5:7])
     } as $b |
     "#" +
-    dec2hex( ($f.r*$f.a + $b.r*(1-$f.a)) | floor ) +
-    dec2hex( ($f.g*$f.a + $b.g*(1-$f.a)) | floor ) +
-    dec2hex( ($f.b*$f.a + $b.b*(1-$f.a)) | floor )
+    dec2hex((($f.r * $f.a) + ($b.r * (1 - $f.a))) | floor) +
+    dec2hex((($f.g * $f.a) + ($b.g * (1 - $f.a))) | floor) +
+    dec2hex((($f.b * $f.a) + ($b.b * (1 - $f.a))) | floor)
   else
     rgba
   end;
