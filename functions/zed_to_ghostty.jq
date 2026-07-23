@@ -23,7 +23,7 @@ $s |
   "palette = 15=\(."terminal.ansi.bright_white" | blend_bg)",
   "",
   "background = \($bg)",
-  "foreground = \(."terminal.foreground" | blend_bg)",
+  "foreground = \(.text | blend_bg)",
   "cursor-color = \(.players[0].cursor | blend_bg)",
   "cursor-text = \(."terminal.foreground" | blend_bg)",
   "selection-background = \(.players[0].selection | blend_bg)",

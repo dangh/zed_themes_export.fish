@@ -7,7 +7,7 @@ $s |
 [
   "[colors]",
   "background = \"\($bg)\"",
-  "foreground = \"\(."terminal.foreground" | blend_bg)\"",
+  "foreground = \"\(.text | blend_bg)\"",
   "",
   "# Cursor",
   "cursor = \"\(.players[0].cursor | blend_bg)\"",
