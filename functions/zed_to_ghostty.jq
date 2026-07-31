@@ -28,6 +28,7 @@ $s |
   "cursor-text = \(."terminal.foreground" | blend_bg)",
   "selection-background = \(.players[0].selection | blend_bg)",
   "selection-foreground = \(."terminal.foreground" | blend_bg)",
+  "split-divider-color = \(.border | blend_bg)",
   "",
   "palette = 250 = \(.background | blend_bg)"
 ] | .[]
